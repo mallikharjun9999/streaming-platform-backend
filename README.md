@@ -81,9 +81,7 @@ Authorization: Bearer <your_jwt_token>
 - **Response** (201):
 ```json
 {
-  "message": "User registered successfully",
-  "userId": 1,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "message": "User registered successfully"
 }
 ```
 - **Error Responses**:
@@ -104,14 +102,7 @@ Authorization: Bearer <your_jwt_token>
 - **Response** (200):
 ```json
 {
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "email": "user@example.com",
-    "name": "John Doe",
-    "country": "US"
-  }
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 - **Error Responses**:
@@ -119,6 +110,42 @@ Authorization: Bearer <your_jwt_token>
   - `404`: User not found
 
 ### 👤 Profile Management (`/api/profile`)
+#### Create Profile
+- **POST** `/api/profile/create-profile`
+- **Description**: Create a new profile for the user
+- **Headers**: 
+  - `Authorization: Bearer <token>`
+  - `Content-Type: application/json`
+- **Request Body**:
+```json
+{
+  "name": "Teen Profile",
+  "is_kids": false,
+  "language_preference": "hi"
+}
+```
+- **Response** (201):
+```json
+{
+  "message": "Profile created successfully",
+  "profileId": 3
+}
+```
+
+#### Get User Profile
+- **GET** `/api/profile/`
+- **Description**: Get user profile for the authenticated user
+- **Headers**: `Authorization: Bearer <token>`
+- **Response** (200):
+```json
+  {
+    "id": 1,
+    "user_id": 1,
+    "name": "John Adult",
+    "is_kids": false,
+    "language_preference": "en"
+  }
+  ```
 
 #### Get User Profiles
 - **GET** `/api/profile/profiles`
@@ -143,28 +170,14 @@ Authorization: Bearer <your_jwt_token>
   }
 ]
 ```
+###update profile
+#### Get User Profiles
+- **PUT** `/api/profile/`
+- **Description**: update profile for the authenticated user
+- **Headers**: `Authorization: Bearer <token>`
+- **Response** (200):
+  Profile updated successfully
 
-#### Create Profile
-- **POST** `/api/profile/profiles`
-- **Description**: Create a new profile for the user
-- **Headers**: 
-  - `Authorization: Bearer <token>`
-  - `Content-Type: application/json`
-- **Request Body**:
-```json
-{
-  "name": "Teen Profile",
-  "is_kids": false,
-  "language_preference": "hi"
-}
-```
-- **Response** (201):
-```json
-{
-  "message": "Profile created successfully",
-  "profileId": 3
-}
-```
 
 ### 🎬 Content Management (`/api/content`)
 
@@ -238,6 +251,77 @@ Authorization: Bearer <your_jwt_token>
 }
 ```
 
+### 💳 Subscriptions (`/api/subscriptions`)
+
+#### Get Subscription Plans
+- **GET** `/api/subscriptions/plans`
+- **Description**: Get all available subscription plans
+- **Headers**: `Authorization: Bearer <token>`
+- **Response** (200):
+```json
+[
+  {
+    "id": 1,
+    "name": "Basic",
+    "price": 5.99,
+    "max_devices": 1,
+    "max_quality": "720p",
+    "allow_live": false,
+    "allow_kids": true,
+    "concurrent_streams": 1
+  },
+  {
+    "id": 2,
+    "name": "Premium",
+    "price": 9.99,
+    "max_devices": 4,
+    "max_quality": "1080p",
+    "allow_live": true,
+    "allow_kids": true,
+    "concurrent_streams": 2
+  }
+]
+```
+
+#### Subscribe to Plan
+- **POST** `/api/subscriptions/subscribe`
+- **Description**: Subscribe user to a specific plan
+- **Headers**: 
+  - `Authorization: Bearer <token>`
+  - `Content-Type: application/json`
+- **Request Body**:
+```json
+{
+  "planId": 2
+}
+```
+- **Response** (201):
+```json
+{
+  "message": "Subscription successful"
+}
+```
+
+#### Get User Subscription
+- **GET** `/api/subscriptions/my-subscription`
+- **Description**: Get current user's subscription details
+- **Headers**: `Authorization: Bearer <token>`
+- **Response** (200):
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "plan_name": "Premium",
+  "price": 9.99,
+  "start_date": "2025-06-18",
+  "end_date": "2025-07-18",
+  "is_active": true,
+  "max_devices": 4,
+  "max_quality": "1080p",
+  "concurrent_streams": 2
+}
+```
+
 ### 🎯 Streaming (`/api/stream`)
 
 #### Stream Content
@@ -248,10 +332,9 @@ Authorization: Bearer <your_jwt_token>
 - **Response** (200):
 ```json
 {
-  "message": "Stream started",
-  "streamUrl": "https://example.com/stream/content1.m3u8",
-  "quality": "1080p",
-  "drmProtected": true
+    "stream_url": "https://example.com/stream/content1.m3u8",
+    "drm_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImNvbnRlbnRJZCI6IjEiLCJkcm1LZXkiOiI0MGU5MWYwOTVkY2EzNjg1OWIyYzdmNjc4NDc5MWQ5M2JjNDJkNGY0YTFhNjQzNzAzNjQwMWQzYWZlZTA5ZmVmIiwiaWF0IjoxNzUwNDEzNjM2LCJleHAiOjE3NTA1MDAwMzZ9.Hlk_R4Zd4DzC9BM29MZiFJZ8h1DYbsxwLR6e2mpe8ss",
+    "expires_at": "2025-06-21T10:00:36.617Z"
 }
 ```
 - **Error Responses**:
@@ -355,9 +438,31 @@ Authorization: Bearer <your_jwt_token>
   }
 ]
 ```
-
 #### Get Channel Programs
-- **GET** `/api/channels/:channelId/programs`
+
+-**GET** `/api/channels/`
+-**Description**:Get all channels
+-**Headers**:`Authorization: Bearer <token>`
+-**Response**(200):
+```json
+[
+    {
+        "id": 1,
+        "name": "National Geographic",
+        "logo_url": "https://example.com/logo1.png",
+        "language": "English",
+        "stream_url": "https://example.com/channel1.m3u8"
+    },
+    {
+        "id": 2,
+        "name": "Discovery",
+        "logo_url": "https://example.com/logo2.png",
+        "language": "English",
+        "stream_url": "https://example.com/channel2.m3u8"
+    }
+]
+```
+- **GET**`/api/channels/:channelId/programs`
 - **Description**: Get programming schedule for a specific channel
 - **Headers**: `Authorization: Bearer <token>`
 - **Response** (200):
@@ -374,109 +479,34 @@ Authorization: Bearer <your_jwt_token>
 ]
 ```
 
-### 💳 Subscriptions (`/api/subscriptions`)
-
-#### Get Subscription Plans
-- **GET** `/api/subscriptions/plans`
-- **Description**: Get all available subscription plans
-- **Headers**: `Authorization: Bearer <token>`
-- **Response** (200):
-```json
-[
-  {
-    "id": 1,
-    "name": "Basic",
-    "price": 5.99,
-    "max_devices": 1,
-    "max_quality": "720p",
-    "allow_live": false,
-    "allow_kids": true,
-    "concurrent_streams": 1
-  },
-  {
-    "id": 2,
-    "name": "Premium",
-    "price": 9.99,
-    "max_devices": 4,
-    "max_quality": "1080p",
-    "allow_live": true,
-    "allow_kids": true,
-    "concurrent_streams": 2
-  }
-]
-```
-
-#### Subscribe to Plan
-- **POST** `/api/subscriptions/subscribe`
-- **Description**: Subscribe user to a specific plan
-- **Headers**: 
-  - `Authorization: Bearer <token>`
-  - `Content-Type: application/json`
-- **Request Body**:
-```json
-{
-  "plan_id": 2
-}
-```
-- **Response** (201):
-```json
-{
-  "message": "Subscription successful",
-  "subscription": {
-    "id": 1,
-    "user_id": 1,
-    "plan_id": 2,
-    "start_date": "2025-06-18",
-    "end_date": "2025-07-18",
-    "is_active": true
-  }
-}
-```
-
-#### Get User Subscription
-- **GET** `/api/subscriptions/my-subscription`
-- **Description**: Get current user's subscription details
-- **Headers**: `Authorization: Bearer <token>`
-- **Response** (200):
-```json
-{
-  "id": 1,
-  "user_id": 1,
-  "plan_name": "Premium",
-  "price": 9.99,
-  "start_date": "2025-06-18",
-  "end_date": "2025-07-18",
-  "is_active": true,
-  "max_devices": 4,
-  "max_quality": "1080p",
-  "concurrent_streams": 2
-}
-```
-
 ### 📋 Watchlist (`/api/watchlist`)
 
 #### Get User Watchlist
-- **GET** `/api/watchlist/:profileId`
+- **GET** `/api/watchlist/`
 - **Description**: Get watchlist for a specific profile
 - **Headers**: `Authorization: Bearer <token>`
+-**Request**:
+```json
+{
+  "profileId":2
+}
+```
 - **Response** (200):
 ```json
 [
-  {
-    "id": 1,
-    "profile_id": 1,
-    "content_id": 1,
-    "content": {
-      "title": "Breaking Bad",
-      "type": "series",
-      "thumbnail_url": "https://example.com/thumbnails/breaking-bad.jpg"
+    {
+        "id": 2,
+        "title": "Romance in Paris",
+        "thumbnail_url": "https://example.com/thumb2.jpg",
+        "genre": "Romance",
+        "language": "French",
+        "type": "movie"
     }
-  }
 ]
 ```
 
 #### Add to Watchlist
-- **POST** `/api/watchlist/:profileId/add`
+- **POST** `/api/watchlist/add`
 - **Description**: Add content to user's watchlist
 - **Headers**: 
   - `Authorization: Bearer <token>`
@@ -484,21 +514,28 @@ Authorization: Bearer <your_jwt_token>
 - **Request Body**:
 ```json
 {
-  "content_id": 5
+  "contentId": 5,
+  "profileId": 3
 }
 ```
 - **Response** (201):
 ```json
 {
-  "message": "Added to watchlist successfully",
-  "watchlistId": 2
+  "message": "Added to watchlist"
 }
 ```
 
 #### Remove from Watchlist
-- **DELETE** `/api/watchlist/:profileId/remove/:contentId`
+- **DELETE** `/api/watchlist/remove`
 - **Description**: Remove content from user's watchlist
 - **Headers**: `Authorization: Bearer <token>`
+-**Request**:
+```json
+{
+  "contentId": 5,
+  "profileId": 3
+}
+```
 - **Response** (200):
 ```json
 {
@@ -518,7 +555,6 @@ Authorization: Bearer <your_jwt_token>
 2. **Set Base URL Variable**
    - In your collection, go to "Variables" tab
    - Add variable: `baseUrl` with value: `http://localhost:3000` (for local development)
-   - For Replit: Use your repl URL like `https://your-repl-name.username.repl.co`
 
 3. **Set Authentication Token**
    - Add variable: `authToken` (leave initial value empty)

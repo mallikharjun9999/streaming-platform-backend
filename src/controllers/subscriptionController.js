@@ -1,3 +1,4 @@
+const { get } = require('../app')
 const getDBConnection = require('../config/database')
 const subscription = require('../models/subscription')
 
@@ -46,5 +47,20 @@ const subscribe = async (req, res) => {
     res.status(500).send('Subscription failed')
   }
 }
-
-module.exports = { getPlans, subscribe }
+const getUserSubscription = async (req, res) => {
+  try {
+    const userId = req.user?.id
+    const db = await getDBConnection()
+    const user_subscription = await subscription.getUserSubscription(db, userId)
+    
+    if (!user_subscription) {
+      return res.status(404).json({ error: 'No active subscription found' })
+    }
+    
+    res.json(user_subscription)
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ error: 'Error fetching user subscription' })
+  }
+}
+module.exports = { getPlans, subscribe,getUserSubscription }

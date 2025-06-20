@@ -5,7 +5,7 @@ const auth = require('../middleware/auth')
 
 // Watchlist Routes
 router.get('/', auth, watchlistController.getWatchlist)
-router.post('/', auth, watchlistController.addToWatchlist)
-router.delete('/', auth, watchlistController.removeFromWatchlist)
+router.post('/add', auth, watchlistController.addToWatchlist)
+router.delete('/remove', auth, watchlistController.removeFromWatchlist)
 
 module.exports = router

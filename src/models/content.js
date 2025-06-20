@@ -1,24 +1,33 @@
+
 module.exports = {
-  async getAllContent(db) {
-    console.log('Fetching all content from the database')
-    if (!db) {
-      throw new Error('Database connection is not established')
+  async getAllContent(db, filters = {}) {
+    let query = `SELECT * FROM content WHERE 1=1`
+    const params = []
+
+    if (filters.type) {
+      query += ` AND type = ?`
+      params.push(filters.type)
     }
-    return await db.all(`SELECT * FROM content`)
+
+    if (filters.genre) {
+      query += ` AND genre = ?`
+      params.push(filters.genre)
+    }
+
+    if (filters.language) {
+      query += ` AND language = ?`
+      params.push(filters.language)
+    }
+
+    if (filters.region) {
+      query += ` AND region = ?`
+      params.push(filters.region)
+    }
+
+    return await db.all(query, params)
   },
 
   async getContentById(db, contentId) {
     return await db.get(`SELECT * FROM content WHERE id = ?`, [contentId])
-  },
-
-  async getContentByLanguage(db, language) {
-    return await db.all(`SELECT * FROM content WHERE language = ?`, [language])
-  },
-
-  async searchContent(db, keyword) {
-    return await db.all(
-      `SELECT * FROM content WHERE title LIKE ? OR description LIKE ?`,
-      [`%${keyword}%`, `%${keyword}%`]
-    )
   }
 }

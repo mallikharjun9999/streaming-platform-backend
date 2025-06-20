@@ -9,5 +9,6 @@ router.get('/plans', subscriptionController.getPlans)
 
 // Subscribe to a plan
 router.post('/subscribe', auth, subscribe)
+router.get('/user', auth, subscriptionController.getUserSubscription)
 
 module.exports = router

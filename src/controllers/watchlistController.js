@@ -2,7 +2,7 @@ const getDBConnection = require('../config/database')
 const watchlistModel = require('../models/watchlist')
 
 const getWatchlist = async (req, res) => {
-  const profileId = req.query.profileId  // Assumes frontend sends ?profileId=1
+  const profileId = req.body.profileId  // Assumes frontend sends ?profileId=1
   if (!profileId) return res.status(400).json({ error: 'profileId required' })
 
   try {
@@ -40,7 +40,7 @@ const removeFromWatchlist = async (req, res) => {
   try {
     const db = await getDBConnection()
     await watchlistModel.removeFromWatchlist(db, profileId, contentId)
-    res.send('Removed from watchlist')
+    res.send('Removed from watchlist successfully')
   } catch (e) {
     console.error(e)
     res.status(500).send('Error removing from watchlist')

@@ -8,6 +8,10 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
     db = await getDBConnection()
     console.log("🔧 User details:", {email,password, name, phone, country })
+    const existingUser = await db.get('SELECT * FROM users WHERE email = ?', [email])
+    if (existingUser) { 
+      return res.status(400).send('User already exists')
+    }
     await db.run(
       'INSERT INTO users (email, password_hash, name, phone, country) VALUES (?, ?, ?, ?, ?)',
       [email, hashedPassword,name,phone,country]
