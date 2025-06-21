@@ -36,7 +36,7 @@ This is a comprehensive Node.js/Express backend API for a streaming platform tha
    git clone <repository-url>
    cd streaming-platform-backend
    npm install
-   npm run dev
+   node ./src/app.js
    ```
 
 2. **Environment Variables**
@@ -46,8 +46,8 @@ This is a comprehensive Node.js/Express backend API for a streaming platform tha
    PORT=3000
    ```
 
-3. **Database Initialization**
-   The database is automatically initialized with schema and seed data when the app starts.
+3. **Database Initialization run below command in terminal**
+   node ./src/config/init.mjs
 
 ### Base URL
 
