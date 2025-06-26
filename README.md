@@ -36,6 +36,7 @@ This is a comprehensive Node.js/Express backend API for a streaming platform tha
    git clone <repository-url>
    cd streaming-platform-backend
    npm install
+   node ./src/config/init.mjs
    node ./src/app.js
    ```
 
@@ -46,8 +47,6 @@ This is a comprehensive Node.js/Express backend API for a streaming platform tha
    PORT=3000
    ```
 
-3. **Database Initialization run below command in terminal**
-   node ./src/config/init.mjs
 
 ### Base URL
 
